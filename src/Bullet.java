@@ -9,7 +9,5 @@ public class Bullet extends DynamicBody {
         setPosition(player.body.getPosition().add(new Vec2(0f,2f)));
         setGravityScale(0f);
         setLinearVelocity(new Vec2(0f,10f));
-
-        setAlwaysOutline(true);
     }
 }

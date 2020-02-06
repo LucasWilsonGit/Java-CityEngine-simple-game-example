@@ -9,6 +9,7 @@ import java.util.Random;
 
 public class Main {
     public static long startTime;
+    private static int score;
 
     public static void main(String[] args) {
         startTime = System.currentTimeMillis();
@@ -33,7 +34,6 @@ public class Main {
         gameFrame.setVisible(true);
         //window params
 
-        int score = 0;
         Player player = new Player(world);
         ArrayList<DynamicBody> obstacles = new ArrayList<DynamicBody>();
 
@@ -49,8 +49,10 @@ public class Main {
                 public void postStep(StepEvent stepEvent) {
                     float dT = stepEvent.getStep();
                     int frameObstacleCap = (int)((System.currentTimeMillis() - startTime) / 1000);
+                    //calculate difficulty based on time passed
 
                     player.Update(dT);
+                    //call player Update void for handling player logic in player Class
 
                     if (player.getLives() <= 0) {
                         System.out.println("You lost, starting again!");
@@ -61,6 +63,10 @@ public class Main {
                             obstacle.destroy();
                         }
                         obstacles.clear();
+                        //if player is out of lives, reset difficulty, player position and score
+                        System.out.println("Your score was: "+score);
+                        score = 0;
+                        //reset score after output
                     }
 
                     if (obstacles.size() < frameObstacleCap) {
@@ -82,11 +88,14 @@ public class Main {
                                     player.hitObstacle();
                                     obstacles.remove(newObstacle);
                                     newObstacle.destroy();
+                                    //if it hits the player, destroy the obstacle and reduce player's lives
                                 }
                                 else if(collisionEvent.getOtherBody() instanceof Bullet) {
                                     obstacles.remove(newObstacle);
                                     newObstacle.destroy();
                                     collisionEvent.getOtherBody().destroy();
+                                    //if it hits a bullet, destroy the bullet and the obstacle
+                                    //shooting an obstacle destroys it before it reaches the bottom, so it won't add score
                                 }
                             }
                         };
@@ -104,8 +113,10 @@ public class Main {
                     obstacles.removeAll(passedObstacles);
                     for (DynamicBody passedObstacle: passedObstacles) {
                         passedObstacle.destroy();
+                        score += 1;
                     }
                     //collect all passed obstacles and clean them up (destroy and remove list nodes)
+                    //add points for all passed obstacles
                 }
             };
             world.addStepListener(s);
