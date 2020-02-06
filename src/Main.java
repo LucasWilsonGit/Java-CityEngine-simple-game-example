@@ -83,6 +83,11 @@ public class Main {
                                     obstacles.remove(newObstacle);
                                     newObstacle.destroy();
                                 }
+                                else if(collisionEvent.getOtherBody() instanceof Bullet) {
+                                    obstacles.remove(newObstacle);
+                                    newObstacle.destroy();
+                                    collisionEvent.getOtherBody().destroy();
+                                }
                             }
                         };
                         newObstacle.addCollisionListener(obstacleCollision);

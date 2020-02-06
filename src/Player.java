@@ -11,12 +11,16 @@ public class Player {
     private InputManager input;
     private static float speed = 25f;
     private int lives = 5;
+    private long lastFireTime = 0;
+    private World world;
 
     Player(World world) {
         body = new StaticBody(world, new BoxShape(1f,1f));
         body.addImage(shipImage);
         body.setPosition( new Vec2(25f,5f));
         input = new InputManager();
+        this.world = world;
+        //store ref to the game world obj
     }
 
     public void hitObstacle() {
@@ -45,6 +49,13 @@ public class Player {
         if (KeyStates.getOrDefault(39, false)) {
             //if RIGHT_ARROW pressed
             body.move(new Vec2(speed * dT, 0));
+        }
+        if (KeyStates.getOrDefault(32, false)) {
+            //if SPACE_BAR pressed
+            if (System.currentTimeMillis() - lastFireTime > 1000) {
+                lastFireTime = System.currentTimeMillis();
+                new Bullet(world,this);
+            }
         }
 
         Vec2 pos = body.getPosition();
